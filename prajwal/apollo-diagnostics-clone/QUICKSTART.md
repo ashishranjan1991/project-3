@@ -1,4 +1,4 @@
-# Quick Start Guide - Apollo Diagnostics Clone
+# Quick Start Guide - Mom Labs 
 
 ## Step-by-Step Instructions
 
