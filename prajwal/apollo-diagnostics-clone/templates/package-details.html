@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ package.name }} - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/test-details.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> >
+            <a href="{{ url_for('package_listing') }}">Packages</a> >
+            <span>{{ package.name }}</span>
+        </div>
+        <h1>{{ package.name }}</h1>
+    </div>
+</div>
+
+<!-- Details Container -->
+<div class="container">
+    <div class="details-container">
+        <!-- Sidebar Navigation -->
+        <aside class="details-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#overview" class="sidebar-nav-item active">Package Overview</a>
+                <a href="#inclusions" class="sidebar-nav-item">Package Inclusions</a>
+                <a href="#faq" class="sidebar-nav-item">FAQ's</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="details-main">
+            <div class="details-header">
+                <h2 class="details-title">{{ package.name }}</h2>
+                <div class="details-badges">
+                    <span class="badge badge-primary">🧪 {{ package.test_count }}+ Test Menu</span>
+                    <span class="badge badge-success">{{ package.legacy }}</span>
+                    <span class="badge badge-info">Accurate Reports</span>
+                </div>
+            </div>
+
+            <!-- Package Overview -->
+            <section id="overview" class="details-section">
+                <h3 class="section-title">Package Overview</h3>
+                <p class="details-description">{{ package.description }}</p>
+            </section>
+
+            <!-- Tests Included -->
+            <section id="inclusions" class="details-section">
+                <h3 class="section-title">Test(s) Included ({{ package.tests|length }})</h3>
+                <div class="tests-included">
+                    {% for test in package.tests %}
+                    <div class="test-included-item">
+                        <span class="test-included-name">{{ test.name }}</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="details-right-sidebar">
+            <!-- Price Card -->
+            <div class="price-card">
+                <h3 class="price-card-title">{{ package.name }}</h3>
+
+                <div class="price-display">
+                    <span class="price-current">₹{{ package.price|int }}</span>
+                    <span class="price-original">₹{{ package.original_price|int }}</span>
+                    <span class="price-discount">{{ package.discount }}% off</span>
+                </div>
+
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-icon">🧪</span>
+                        <div class="info-content">
+                            <div class="info-label">Tests Included</div>
+                            <div class="info-value">{{ package.test_count }}+ Tests</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">🏠</span>
+                        <div class="info-content">
+                            <div class="info-label">Sample Collection</div>
+                            <div class="info-value">Home Collection Available</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" data-add-to-cart data-item-type="package"
+                    data-item-id="{{ package.id }}" data-item-name="{{ package.name }}">
+                    Add To Cart
+                </button>
+            </div>
+
+            <!-- Accreditation Card -->
+            <div class="accreditation-card">
+                <h4 class="accreditation-title">Accreditations for Testing Quality</h4>
+                <div class="accreditation-logos">
+                    <div class="accreditation-logo">CAP</div>
+                    <div class="accreditation-logo">NABL</div>
+                    <div class="accreditation-logo">ISO</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

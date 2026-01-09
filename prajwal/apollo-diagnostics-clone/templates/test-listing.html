@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}All Tests - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/test-listing.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> > <span>All Tests</span>
+        </div>
+        <h1>Book A Lab Test</h1>
+    </div>
+</div>
+
+<!-- Test Listing Container -->
+<div class="container">
+    <div class="test-listing-container">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <div class="filter-section">
+                <h3 class="filter-title">Conditions</h3>
+                <div class="filter-options">
+                    {% for category in categories %}
+                    <div class="filter-option">
+                        <input type="checkbox" id="cat-{{ category.slug }}" {% if selected_category==category.slug
+                            %}checked{% endif %}
+                            onchange="window.location.href='{{ url_for('test_listing', category=category.slug) }}'">
+                        <label for="cat-{{ category.slug }}">{{ category.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if selected_category or search_query %}
+            <button class="clear-filters" onclick="window.location.href='{{ url_for('test_listing') }}'">
+                Clear Filters
+            </button>
+            {% endif %}
+        </aside>
+
+        <!-- Tests List -->
+        <div class="tests-list">
+            {% if search_query %}
+            <p style="margin-bottom: var(--spacing-lg);">
+                Showing {{ tests|length }} results for "<strong>{{ search_query }}</strong>"
+            </p>
+            {% endif %}
+
+            {% if tests %}
+            {% for test in tests %}
+            <div class="test-list-card" onclick="window.location.href='{{ url_for('test_details', slug=test.slug) }}'">
+                <div class="test-list-icon">💉</div>
+
+                <div class="test-list-content">
+                    <div class="test-list-header">
+                        <h3 class="test-list-name">{{ test.name }}</h3>
+                    </div>
+
+                    <div class="test-list-badges">
+                        {% if test.is_safe %}
+                        <span class="badge badge-info">SAFE</span>
+                        {% endif %}
+                        {% if test.home_collection %}
+                        <span class="badge badge-success">Home Collection Available</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="test-list-info">
+                        <span>📋 Sample Type: {{ test.sample_type }}</span>
+                        <span>⏱️ Report delivery: {{ test.report_delivery }}</span>
+                        <span>🧪 {{ test.test_count }} Parameters</span>
+                    </div>
+                </div>
+
+                <div class="test-list-actions">
+                    <div class="test-list-price">
+                        <div class="price-current">₹{{ test.price|int }}</div>
+                        <div class="price-original">₹{{ test.original_price|int }}</div>
+                        <div class="price-discount">{{ test.discount }}% off</div>
+                    </div>
+                    <button class="btn btn-primary" data-add-to-cart data-item-type="test" data-item-id="{{ test.id }}"
+                        data-item-name="{{ test.name }}" onclick="event.stopPropagation()">
+                        Add To Cart
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No tests found</h3>
+                <p>Try adjusting your filters or search query</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Booking - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> >
+            <a href="{{ url_for('cart_page') }}">Cart</a> >
+            <span>Booking</span>
+        </div>
+        <h1>Complete Your Booking</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="booking-container">
+        <!-- Booking Form -->
+        <div class="booking-form">
+            <form id="bookingForm">
+                <!-- Patient Details -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Patient Details</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Age *</label>
+                            <input type="number" name="age" class="form-control" min="1" max="120" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Gender *</label>
+                            <select name="gender" class="form-control" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" name="phone" class="form-control" pattern="[0-9]{10}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Details -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Address Details</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Address *</label>
+                        <textarea name="address" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">City *</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Pincode *</label>
+                            <input type="text" name="pincode" class="form-control" pattern="[0-9]{6}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nearest Centre</label>
+                        <select name="location_id" class="form-control">
+                            <option value="">Select Centre</option>
+                            {% for location in locations %}
+                            <option value="{{ location.id }}">{{ location.city }} - {{ location.address }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Appointment Details -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Appointment Details</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Date *</label>
+                        <input type="date" name="appointment_date" class="form-control"
+                            min="{{ (now().date() + timedelta(days=1)).isoformat() }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Time Slot *</label>
+                        <input type="hidden" id="appointment_time" name="appointment_time" required>
+                        <div class="time-slots">
+                            <div class="time-slot" data-time="06:00 AM - 08:00 AM">06:00 AM - 08:00 AM</div>
+                            <div class="time-slot" data-time="08:00 AM - 10:00 AM">08:00 AM - 10:00 AM</div>
+                            <div class="time-slot" data-time="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</div>
+                            <div class="time-slot" data-time="12:00 PM - 02:00 PM">12:00 PM - 02:00 PM</div>
+                            <div class="time-slot" data-time="02:00 PM - 04:00 PM">02:00 PM - 04:00 PM</div>
+                            <div class="time-slot" data-time="04:00 PM - 06:00 PM">04:00 PM - 06:00 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Special Instructions</label>
+                        <textarea name="special_instructions" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                    Confirm Booking
+                </button>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <aside class="order-summary">
+            <h3 class="summary-title">Order Summary</h3>
+
+            <div class="summary-items">
+                {% for item in cart_items %}
+                <div class="summary-item">
+                    <span class="summary-item-name">{{ item.name }}</span>
+                    <span class="summary-item-price">₹{{ item.price|int }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-total">
+                <span class="summary-total-label">Total Amount</span>
+                <span class="summary-total-amount">₹{{ total|int }}</span>
+            </div>
+
+            <div
+                style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--bg-light); border-radius: var(--radius-md);">
+                <p style="font-size: var(--font-size-sm); color: var(--text-light); margin: 0;">
+                    ✓ Home sample collection<br>
+                    ✓ Accurate reports<br>
+                    ✓ NABL & CAP accredited
+                </p>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}

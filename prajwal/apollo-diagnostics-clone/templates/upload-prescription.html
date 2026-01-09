@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Prescription - Apollo Diagnostics{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+    .upload-area {
+        border: 2px dashed var(--primary-teal);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-2xl);
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        background: rgba(8, 145, 165, 0.05);
+    }
+
+    .upload-area:hover {
+        background: rgba(8, 145, 165, 0.1);
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        color: var(--primary-teal);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .selected-files {
+        margin-top: var(--spacing-lg);
+        text-align: left;
+    }
+
+    .file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-md);
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .file-name {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .remove-file {
+        color: var(--magenta-accent);
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> > <span>Upload Prescription</span>
+        </div>
+        <h1>Upload Doctor's Prescription</h1>
+    </div>
+</div>
+
+<div class="container" style="padding: 40px 20px;">
+    <div class="row" style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <!-- Left Side: Upload Form -->
+        <div class="col-md-8" style="flex: 2; min-width: 300px;">
+            <h1 style="color: var(--primary-green); margin-bottom: 20px;">Upload Doctor's Prescription</h1>
+            <p style="margin-bottom: 30px; color: var(--text-light);">
+                Upload your prescription and we will help you book the relevant tests.
+            </p>
+
+            <form id="prescriptionForm" method="POST" enctype="multipart/form-data">
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-icon">📄</div>
+                    <h3>Drag & Drop files here or click to browse</h3>
+                    <p>Supported formats: JPG, PNG, PDF (Max 5MB)</p>
+                    <input type="file" name="files" id="fileInput" class="file-input" multiple
+                        accept=".jpg,.jpeg,.png,.pdf">
+                </div>
+
+                <div class="selected-files" id="fileList"></div>
+
+                <div class="form-section">
+                    <h3 class="form-section-title">Contact Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" name="phone" class="form-control" pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Submit Prescription</button>
+            </form>
+        </div>
+
+        <aside class="order-summary">
+            <h3 class="summary-title">Why Upload?</h3>
+            <div class="summary-items">
+                <div class="summary-item" style="display: block; margin-bottom: var(--spacing-lg);">
+                    <h4 style="margin-bottom: var(--spacing-xs); color: var(--primary-teal);">✓ Accurate Booking</h4>
+                    <p style="color: var(--text-light);">Our experts will book the exact tests prescribed by your
+                        doctor.</p>
+                </div>
+
+                <div class="summary-item" style="display: block; margin-bottom: var(--spacing-lg);">
+                    <h4 style="margin-bottom: var(--spacing-xs); color: var(--primary-teal);">✓ Time Saving</h4>
+                    <p style="color: var(--text-light);">No need to search for individual tests.</p>
+                </div>
+
+                <div class="summary-item" style="display: block;">
+                    <h4 style="margin-bottom: var(--spacing-xs); color: var(--primary-teal);">✓ Expert Support</h4>
+                    <p style="color: var(--text-light);">Get call back from our health advisors.</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const form = document.getElementById('prescriptionForm');
+
+        // Handle click
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection
+        fileInput.addEventListener('change', handleFiles);
+
+        // Handle drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.background = 'rgba(8, 145, 165, 0.15)';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.background = 'rgba(8, 145, 165, 0.05)';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.background = 'rgba(8, 145, 165, 0.05)';
+            fileInput.files = e.dataTransfer.files;
+            handleFiles();
+        });
+
+        function handleFiles() {
+            fileList.innerHTML = '';
+            const files = fileInput.files;
+
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                    <div class="file-name">📄 ${file.name}</div>
+                    <div class="file-size" style="color: var(--text-muted); font-size: 0.8rem;">
+                        ${(file.size / 1024 / 1024).toFixed(2)} MB
+                    </div>
+                `;
+                    fileList.appendChild(fileItem);
+                }
+            }
+        }
+
+        // Handle form submit
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            try {
+                // Simulate upload delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                alert('Prescription uploaded successfully! We will contact you shortly.');
+                window.location.href = "{{ url_for('index') }}";
+            } catch (error) {
+                alert('Failed to upload. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Prescription';
+            }
+        });
+    });
+</script>
+{% endblock %}

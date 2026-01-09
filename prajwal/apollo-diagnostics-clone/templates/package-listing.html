@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Health Packages - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> > <span>Health Packages</span>
+        </div>
+        <h1>Health Check Packages</h1>
+    </div>
+</div>
+
+<!-- Packages Section -->
+<section class="section">
+    <div class="container">
+        <div class="packages-grid">
+            {% for package in packages %}
+            <div class="package-card"
+                onclick="window.location.href='{{ url_for('package_details', slug=package.slug) }}'">
+                <div class="package-header">
+                    <h3 class="package-name">{{ package.name }}</h3>
+                </div>
+
+                <div class="package-info">
+                    <div class="info-badge">
+                        <span>🧪</span>
+                        <span>{{ package.test_count }}+ Test Menu</span>
+                    </div>
+                    <div class="info-badge">
+                        <span>🏠</span>
+                        <span>Home Collection</span>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-light); margin-bottom: var(--spacing-md);">
+                    {{ package.description[:100] }}...
+                </p>
+
+                <div class="package-price">
+                    <span class="price-current">₹{{ package.price|int }}</span>
+                    <span class="price-original">₹{{ package.original_price|int }}</span>
+                    <span class="price-discount">{{ package.discount }}% off</span>
+                </div>
+
+                <button class="btn btn-primary btn-block" data-add-to-cart data-item-type="package"
+                    data-item-id="{{ package.id }}" data-item-name="{{ package.name }}"
+                    onclick="event.stopPropagation()">
+                    Add To Cart
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

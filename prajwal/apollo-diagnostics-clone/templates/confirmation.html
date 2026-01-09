@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="confirmation-container">
+        <!-- Success Icon -->
+        <div class="confirmation-icon">✓</div>
+
+        <h1 class="confirmation-title">Booking Confirmed!</h1>
+        <p class="confirmation-message">
+            Your appointment has been successfully booked. We'll send you a confirmation message shortly.
+        </p>
+
+        <!-- Booking Details Card -->
+        <div class="booking-details-card">
+            <div class="booking-number">
+                Booking ID: {{ booking.booking_number }}
+            </div>
+
+            <div class="booking-info-grid">
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Patient Name</div>
+                    <div class="booking-info-value">{{ booking.patient.name }}</div>
+                </div>
+
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Phone Number</div>
+                    <div class="booking-info-value">{{ booking.patient.phone }}</div>
+                </div>
+
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Appointment Date</div>
+                    <div class="booking-info-value">{{ booking.appointment_date }}</div>
+                </div>
+
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Appointment Time</div>
+                    <div class="booking-info-value">{{ booking.appointment_time }}</div>
+                </div>
+
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Total Amount</div>
+                    <div class="booking-info-value">₹{{ booking.total_amount|int }}</div>
+                </div>
+
+                <div class="booking-info-item">
+                    <div class="booking-info-label">Status</div>
+                    <div class="booking-info-value">
+                        <span class="badge badge-success">{{ booking.status|title }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booked Items -->
+            <div
+                style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: var(--spacing-md);">Booked Items</h3>
+                {% for item in booking.items %}
+                <div
+                    style="padding: var(--spacing-sm); background: var(--bg-light); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm);">
+                    <strong>{{ item.item_name }}</strong> - ₹{{ item.price|int }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="confirmation-actions">
+            <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Back to Home</a>
+            <a href="{{ url_for('test_listing') }}" class="btn btn-outline btn-lg">Book More Tests</a>
+        </div>
+
+        <!-- Important Information -->
+        <div
+            style="max-width: 600px; margin: var(--spacing-xl) auto; padding: var(--spacing-lg); background: #E3F2FD; border-radius: var(--radius-lg); text-align: left;">
+            <h4 style="color: var(--primary-teal); margin-bottom: var(--spacing-md);">📋 Important Information</h4>
+            <ul style="list-style: disc; padding-left: var(--spacing-lg); color: var(--text-dark);">
+                <li>Our phlebotomist will visit your home at the scheduled time</li>
+                <li>Please keep your booking ID handy</li>
+                <li>Fasting requirements (if any) will be communicated via SMS</li>
+                <li>Reports will be available within the specified time</li>
+                <li>For any queries, call us at 040-4444-2424</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

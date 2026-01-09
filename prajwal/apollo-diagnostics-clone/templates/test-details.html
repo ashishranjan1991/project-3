@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}{{ test.name }} - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/test-details.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> >
+            <a href="{{ url_for('test_listing') }}">All Tests</a> >
+            <span>{{ test.name }}</span>
+        </div>
+        <h1>{{ test.name }}</h1>
+    </div>
+</div>
+
+<!-- Details Container -->
+<div class="container">
+    <div class="details-container">
+        <!-- Sidebar Navigation -->
+        <aside class="details-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#overview" class="sidebar-nav-item active">Test Overview</a>
+                <a href="#inclusions" class="sidebar-nav-item">Test Inclusions</a>
+                <a href="#preparation" class="sidebar-nav-item">Preparation</a>
+                <a href="#faq" class="sidebar-nav-item">FAQ's</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="details-main">
+            <div class="details-header">
+                <h2 class="details-title">{{ test.name }}</h2>
+                <div class="details-badges">
+                    <span class="badge badge-primary">🧪 {{ test.test_count }} Parameters</span>
+                    <span class="badge badge-success">40+ Yrs of Legacy</span>
+                    <span class="badge badge-info">Accurate Reports</span>
+                </div>
+            </div>
+
+            <!-- Test Overview -->
+            <section id="overview" class="details-section">
+                <h3 class="section-title">Test Overview</h3>
+                <p class="details-description">{{ test.description }}</p>
+            </section>
+
+            <!-- Test Inclusions -->
+            <section id="inclusions" class="details-section">
+                <h3 class="section-title">Test(s) Included ({{ test.parameters|length }})</h3>
+                <div class="parameters-list">
+                    {% for parameter in test.parameters %}
+                    <div class="parameter-item">{{ parameter }}</div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Preparation -->
+            {% if test.preparation %}
+            <section id="preparation" class="details-section">
+                <h3 class="section-title">Pre-test Information</h3>
+                <div class="preparation-info">
+                    <strong>⚠️ Important:</strong> {{ test.preparation }}
+                </div>
+            </section>
+            {% endif %}
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="details-right-sidebar">
+            <!-- Price Card -->
+            <div class="price-card">
+                <h3 class="price-card-title">{{ test.name }}</h3>
+
+                <div class="price-display">
+                    <span class="price-current">₹{{ test.price|int }}</span>
+                    <span class="price-original">₹{{ test.original_price|int }}</span>
+                    <span class="price-discount">{{ test.discount }}% off</span>
+                </div>
+
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-icon">📋</span>
+                        <div class="info-content">
+                            <div class="info-label">Sample Type</div>
+                            <div class="info-value">{{ test.sample_type }}</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">📅</span>
+                        <div class="info-content">
+                            <div class="info-label">Report Delivery</div>
+                            <div class="info-value">{{ test.report_delivery }}</div>
+                        </div>
+                    </div>
+
+                    {% if test.preparation %}
+                    <div class="info-item">
+                        <span class="info-icon">⚠️</span>
+                        <div class="info-content">
+                            <div class="info-label">Pre-test Information</div>
+                            <div class="info-value">{{ test.preparation }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" data-add-to-cart data-item-type="test"
+                    data-item-id="{{ test.id }}" data-item-name="{{ test.name }}">
+                    Add To Cart
+                </button>
+            </div>
+
+            <!-- Accreditation Card -->
+            <div class="accreditation-card">
+                <h4 class="accreditation-title">Accreditations for Testing Quality</h4>
+                <div class="accreditation-logos">
+                    <div class="accreditation-logo">CAP</div>
+                    <div class="accreditation-logo">NABL</div>
+                    <div class="accreditation-logo">ISO</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- Related Tests -->
+{% if related_tests %}
+<section class="related-tests">
+    <div class="container">
+        <h2 class="section-title">Related Tests</h2>
+        <div class="related-tests-grid">
+            {% for related in related_tests %}
+            <div class="test-card" onclick="window.location.href='{{ url_for('test_details', slug=related.slug) }}'">
+                <div class="test-icon">💉</div>
+                <h3 class="test-name">{{ related.name }}</h3>
+                <div class="test-price">₹{{ related.price|int }}</div>
+                <button class="btn btn-secondary btn-sm">View Details</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

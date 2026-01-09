@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - MomLabs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a> > <span>Cart</span>
+        </div>
+        <h1>Shopping Cart</h1>
+    </div>
+</div>
+
+<div class="container">
+    {% if cart_items %}
+    <div class="booking-container">
+        <!-- Cart Items -->
+        <div class="cart-items">
+            <h2 style="margin-bottom: var(--spacing-lg);">Cart Items ({{ cart_items|length }})</h2>
+
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <h3 class="cart-item-name">{{ item.name }}</h3>
+                    <span class="cart-item-type">{{ item.type }}</span>
+                </div>
+
+                <div class="cart-item-price">
+                    <div class="price-current">₹{{ item.price|int }}</div>
+                    {% if item.original_price %}
+                    <div class="price-original">₹{{ item.original_price|int }}</div>
+                    {% endif %}
+                </div>
+
+                <button class="cart-item-remove" data-remove-from-cart data-item-type="{{ item.type }}"
+                    data-item-id="{{ item.id }}">
+                    Remove
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Order Summary -->
+        <aside class="order-summary">
+            <h3 class="summary-title">Order Summary</h3>
+
+            <div class="summary-items">
+                {% for item in cart_items %}
+                <div class="summary-item">
+                    <span class="summary-item-name">{{ item.name }}</span>
+                    <span class="summary-item-price">₹{{ item.price|int }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-total">
+                <span class="summary-total-label">Total Amount</span>
+                <span class="summary-total-amount">₹{{ total|int }}</span>
+            </div>
+
+            <a href="{{ url_for('booking_page') }}" class="btn btn-primary btn-block btn-lg">
+                Proceed to Booking
+            </a>
+
+            <a href="{{ url_for('test_listing') }}" class="btn btn-outline btn-block"
+                style="margin-top: var(--spacing-md);">
+                Continue Shopping
+            </a>
+        </aside>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <div class="empty-cart-icon">🛒</div>
+        <h2>Your cart is empty</h2>
+        <p>Add tests or packages to your cart to get started</p>
+        <a href="{{ url_for('test_listing') }}" class="btn btn-primary btn-lg">Browse Tests</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

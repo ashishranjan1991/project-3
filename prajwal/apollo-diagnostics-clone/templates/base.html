@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MomLabs - Trusted Diagnostic Centre & Pathology Lab{% endblock %}</title>
+    <meta name="description"
+        content="MomLabs offers comprehensive diagnostic tests and health check packages with home collection facility.">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    {% block extra_css %}{% endblock %}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="container">
+                <div class="header-contact">
+                    <a href="tel:04044442424" class="contact-item">
+                        <span>📞</span>
+                        <span>Home Collection: 040-4444-2424</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ url_for('upload_prescription') }}" style="color: white; margin-right: 20px;">Upload
+                        Prescription</a>
+                    <span>Download Report</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="header-main">
+            <div class="container">
+                <div class="header-container">
+                    <!-- Logo -->
+                    <a href="{{ url_for('index') }}" class="logo">
+                        <span style="color: var(--primary-green);">Mom</span>
+                        <span style="color: var(--primary-light);">Labs</span>
+                    </a>
+
+                    <!-- Location Selector -->
+                    <div class="location-selector">
+                        <span>📍</span>
+                        <select>
+                            <option>Hyderabad</option>
+                            <option>Bangalore</option>
+                            <option>Mumbai</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="search-bar">
+                        <form action="{{ url_for('test_listing') }}" method="get">
+                            <input type="text" name="q" placeholder="Search for Lab Tests/Packages">
+                            <button type="submit" class="search-btn">🔍</button>
+                        </form>
+                    </div>
+
+                    <!-- Header Actions -->
+                    <div class="header-actions">
+                        <a href="https://wa.me/04044442424" class="header-icon" title="WhatsApp">
+                            <span>💬</span>
+                        </a>
+                        <a href="{{ url_for('cart_page') }}" class="header-icon" title="Cart">
+                            <span>🛒</span>
+                            <span class="cart-count" style="{% if cart_count == 0 %}display: none;{% endif %}">{{
+                                cart_count }}</span>
+                        </a>
+                        <a href="#" class="header-icon" title="Account">
+                            <span>👤</span>
+                        </a>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="container">
+                <ul class="nav-menu">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Health Risks ▼</a>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('test_listing', category='diabetes') }}" class="dropdown-item">Diabetes
+                                Risk</a>
+                            <a href="{{ url_for('test_listing', category='bone-health') }}" class="dropdown-item">Bone
+                                Health</a>
+                            <a href="{{ url_for('test_listing', category='infertility') }}"
+                                class="dropdown-item">Infertility</a>
+                            <a href="{{ url_for('package_listing') }}" class="dropdown-item">Full Body Checkup</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link">Health Conditions ▼</a>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('test_listing', category='heart') }}" class="dropdown-item">Heart</a>
+                            <a href="{{ url_for('test_listing', category='liver') }}" class="dropdown-item">Liver</a>
+                            <a href="{{ url_for('test_listing', category='kidney') }}" class="dropdown-item">Kidney</a>
+                            <a href="{{ url_for('test_listing', category='thyroid') }}"
+                                class="dropdown-item">Thyroid</a>
+                            <a href="{{ url_for('test_listing', category='lungs') }}" class="dropdown-item">Lungs</a>
+                            <a href="{{ url_for('test_listing') }}" class="dropdown-item"
+                                style="color: var(--primary-green); font-weight: 600;">View All Conditions</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('package_listing') }}" class="nav-link">Health Check Packages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('test_listing') }}" class="nav-link">Book A Test</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Find Nearest Centre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Franchise</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About MomLabs</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        Leading diagnostic centre offering comprehensive health check packages and diagnostic
+                        tests with home collection facility. Care like a Mom.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="{{ url_for('test_listing') }}" class="footer-link">Book A Test</a>
+                        <a href="{{ url_for('package_listing') }}" class="footer-link">Health Packages</a>
+                        <a href="#" class="footer-link">Find Centre</a>
+                        <a href="#" class="footer-link">Download Report</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Popular Tests</h3>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Lipid Profile</a>
+                        <a href="#" class="footer-link">Complete Blood Count</a>
+                        <a href="#" class="footer-link">Thyroid Profile</a>
+                        <a href="#" class="footer-link">Liver Function Test</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="footer-links">
+                        <p style="color: rgba(255, 255, 255, 0.7);">📞 040-4444-2424</p>
+                        <p style="color: rgba(255, 255, 255, 0.7);">📧 info@momlabs.com</p>
+                        <p style="color: rgba(255, 255, 255, 0.7);">🕐 24/7 Support</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 MomLabs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
